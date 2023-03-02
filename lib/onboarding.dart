@@ -1,69 +1,110 @@
+import 'package:balance/permission.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'tool.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final controller = PageController();
+  final title = {
+    1: "FUN EXERCISE",
+    2: "OWN YOUR HEALTH",
+  };
+  final subTitle = {
+    1: "You cannot always control what goes on the outside. But you always control what goes on the inside, Being your journey to a better life with peace and discover your soul.",
+    2: "Your Diet Is A Bank Account. Good Food Choices Are Good Investments.",
+  };
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  pages(id) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: 100),
+        Image.asset('Assets/Images/one ($id).png'),
+        const SizedBox(height: 30),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Text(
+            title[id]!,
+            style: GoogleFonts.anton(color: purple, fontSize: 48),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Text(
+            subTitle[id]!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.lato(color: Colors.black54, fontSize: 16),
+          ),
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-        decoration: BoxDecoration(
-          color: teal,
-          image: DecorationImage(
-            image: const AssetImage('Assets/Images/rope.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5),
-              BlendMode.dstATop,
-            ),
-          ),
-        ),
+      backgroundColor: Colors.white,
+      body: PageView(
+        controller: controller,
+        children: [
+          pages(1),
+          pages(2),
+        ],
+      ),
+      bottomSheet: Container(
+        color: Colors.white,
+        height: MediaQuery.of(context).size.height / 4,
+        width: double.maxFinite,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(
-              "SET HIGH FITNESS GOAL",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.anton(color: Colors.white, fontSize: 40),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "After you decide to start training we will make sure you get the best fitness program.",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.lato(color: Colors.white, fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: red,
-                  minimumSize: const Size.fromHeight(65),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  )),
-              child: Text(
-                "Log in",
-                style: GoogleFonts.nunito(fontSize: 24),
+            SmoothPageIndicator(
+              controller: controller,
+              count: 2,
+              effect: const ExpandingDotsEffect(
+                activeDotColor: purple,
+                dotColor: purple,
+                spacing: 10.0,
+                dotHeight: 10.0,
+                dotWidth: 10.0,
+                paintStyle: PaintingStyle.fill,
+                strokeWidth: 1.0,
               ),
             ),
-            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return Permissions();
+                }));
+              },
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white10,
-                  minimumSize: const Size.fromHeight(65),
-                  side: const BorderSide(color: Colors.white, width: 0.5),
+                  backgroundColor: purple,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(25),
                   )),
               child: Text(
-                "Try free",
-                style: GoogleFonts.nunito(fontSize: 24),
+                "NEXT",
+                style: GoogleFonts.nunito(
+                    fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            )
+            ),
           ],
         ),
       ),
