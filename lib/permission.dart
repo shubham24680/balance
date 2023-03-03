@@ -55,7 +55,6 @@ class Permissions extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Container(
         padding: padding,
-        width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

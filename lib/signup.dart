@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:balance/otp.dart';
 import 'tool.dart';
 
 class Signup extends StatefulWidget {
@@ -58,7 +59,7 @@ class _SignupState extends State<Signup> {
                       (obscure)
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
-                      color: green,
+                      color: blue,
                     ),
                   )
                 : null,
@@ -67,7 +68,7 @@ class _SignupState extends State<Signup> {
               borderRadius: BorderRadius.circular(12),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: green),
+              borderSide: const BorderSide(color: blue),
               borderRadius: BorderRadius.circular(12),
             ),
           ),
@@ -109,9 +110,13 @@ class _SignupState extends State<Signup> {
               field(4),
               const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const OTPScreen();
+                  }));
+                },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: green,
+                    backgroundColor: blue,
                     minimumSize: const Size.fromHeight(65),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -139,7 +144,7 @@ class _SignupState extends State<Signup> {
               ElevatedButton(
                 onPressed: () {
                   // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return verify[id];
+                  //   return const OTPScreen();
                   // }));
                 },
                 style: ElevatedButton.styleFrom(
@@ -168,7 +173,7 @@ class _SignupState extends State<Signup> {
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -178,11 +183,11 @@ class _SignupState extends State<Signup> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    style: TextButton.styleFrom(foregroundColor: Colors.white),
+                    style: TextButton.styleFrom(foregroundColor: Colors.blue),
                     child: Text(
                       "Login now",
                       style: GoogleFonts.varelaRound(
-                          color: green, fontWeight: FontWeight.bold),
+                          color: blue, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

@@ -11,7 +11,9 @@ dependencies:
     sdk: flutter
   flutter_svg: ^2.0.2
   google_fonts: ^4.0.3
+  numberpicker: ^2.1.1
   permission_handler: ^10.2.0
+  pinput: ^2.2.31
   smooth_page_indicator: ^1.0.1
 
 dev_dependencies:
