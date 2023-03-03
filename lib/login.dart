@@ -1,36 +1,30 @@
-import 'package:balance/login.dart';
+import 'package:balance/home.dart';
+import 'package:balance/signup.dart';
+import 'package:balance/tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:balance/otp.dart';
-import 'tool.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<Login> createState() => _LoginState();
 }
 
-class _SignupState extends State<Signup> {
-  final name = TextEditingController();
+class _LoginState extends State<Login> {
   final email = TextEditingController();
-  final phone = TextEditingController();
   final password = TextEditingController();
   bool obscure = true;
 
   field(id) {
     Map<int, TextEditingController> control = {
-      1: name,
-      2: email,
-      3: phone,
-      4: password,
+      1: email,
+      2: password,
     };
     Map<int, String> hint = {
-      1: "FULL NAME",
-      2: "EMAIL ADDRESS",
-      3: "PHONE",
-      4: "PASSWORD",
+      1: "EMAIL ADDRESS",
+      2: "PASSWORD",
     };
 
     return Column(
@@ -43,12 +37,12 @@ class _SignupState extends State<Signup> {
         const SizedBox(height: 5),
         TextField(
           controller: control[id],
-          obscureText: (id == 4) ? obscure : false,
+          obscureText: (id == 2) ? obscure : false,
           cursorColor: blue,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[150],
-            suffixIcon: (id == 4)
+            suffixIcon: (id == 2)
                 ? GestureDetector(
                     onTap: () {
                       setState(() {
@@ -97,22 +91,18 @@ class _SignupState extends State<Signup> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Create Account",
+                "Login",
                 style: GoogleFonts.anton(color: Colors.black, fontSize: 32),
               ),
               const SizedBox(height: 30),
               field(1),
               const SizedBox(height: 20),
               field(2),
-              const SizedBox(height: 20),
-              field(3),
-              const SizedBox(height: 20),
-              field(4),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const OTPScreen();
+                    return const Home();
                   }));
                 },
                 style: ElevatedButton.styleFrom(
@@ -122,8 +112,21 @@ class _SignupState extends State<Signup> {
                       borderRadius: BorderRadius.circular(20),
                     )),
                 child: Text(
-                  "Sign up",
+                  "Log in",
                   style: GoogleFonts.nunito(fontSize: 24),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                  child: Text(
+                    "Forgot password?",
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.varelaRound(
+                        color: blue, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
@@ -178,19 +181,19 @@ class _SignupState extends State<Signup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Already a memeber?",
+                    "Not a member?",
                     style: GoogleFonts.varelaRound(fontWeight: FontWeight.bold),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Login()));
+                        context,
+                        MaterialPageRoute(builder: (context) => const Signup()),
+                      );
                     },
                     style: TextButton.styleFrom(foregroundColor: Colors.blue),
                     child: Text(
-                      "Login now",
+                      "Register now",
                       style: GoogleFonts.varelaRound(
                           color: blue, fontWeight: FontWeight.bold),
                     ),

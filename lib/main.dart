@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'options.dart';
 
 void main() {
-  runApp(const MainApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -11,14 +13,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        textTheme: TextTheme(
-          displayLarge: GoogleFonts.anton(color: Colors.white, fontSize: 40),
-          displaySmall: GoogleFonts.lato(color: Colors.white, fontSize: 16),
-        ),
-      ),
-      home: const OptionScreen(),
+    return const MaterialApp(
+      home: OptionScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,7 +1,7 @@
-import 'package:balance/permission.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'permission.dart';
 import 'tool.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -12,7 +12,8 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final controller = PageController();
+  final _controller = PageController(initialPage: 0);
+  int _activePage = 0;
   final title = {
     1: "FUN EXERCISE",
     2: "OWN YOUR HEALTH",
@@ -21,12 +22,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     1: "You cannot always control what goes on the outside. But you always control what goes on the inside, Being your journey to a better life with peace and discover your soul.",
     2: "Your Diet Is A Bank Account. Good Food Choices Are Good Investments.",
   };
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   pages(id) {
     return Column(
@@ -48,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: Text(
             subTitle[id]!,
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(color: Colors.black54, fontSize: 16),
+            style: GoogleFonts.lato(color: black, fontSize: 16),
           ),
         )
       ],
@@ -59,23 +54,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: PageView(
-        controller: controller,
-        children: [
-          pages(1),
-          pages(2),
-        ],
+      body: PageView.builder(
+        controller: _controller,
+        onPageChanged: (value) {
+          setState(() {
+            _activePage = value;
+          });
+        },
+        itemCount: title.length,
+        itemBuilder: (context, index) {
+          return pages((index % title.length) + 1);
+        },
       ),
       bottomSheet: Container(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height / 4,
+        color: white,
         width: double.maxFinite,
+        height: MediaQuery.of(context).size.height / 4,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SmoothPageIndicator(
-              controller: controller,
-              count: 2,
+              controller: _controller,
+              count: title.length,
               effect: const ExpandingDotsEffect(
                 activeDotColor: purple,
                 dotColor: purple,
@@ -88,9 +88,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return Permissions();
-                }));
+                if (_activePage + 1 != title.length) {
+                  _controller.animateToPage(_activePage + 1,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeIn);
+                } else {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Permissions();
+                  }));
+                }
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: purple,
@@ -100,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     borderRadius: BorderRadius.circular(25),
                   )),
               child: Text(
-                "NEXT",
+                (_activePage + 1 != title.length ? "NEXT" : "SIGN UP"),
                 style: GoogleFonts.nunito(
                     fontSize: 20, fontWeight: FontWeight.bold),
               ),
