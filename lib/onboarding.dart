@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'permission.dart';
 import 'tool.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -93,9 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeIn);
                 } else {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return Permissions();
-                  }));
+                  Navigator.pushNamed(context, '/Permission');
                 }
               },
               style: ElevatedButton.styleFrom(

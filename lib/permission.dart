@@ -64,39 +64,7 @@ class Permissions extends StatelessWidget {
               style: GoogleFonts.anton(color: Colors.black, fontSize: 32),
             ),
             for (int index = 1; index <= title.length; index++) pages(index),
-            ElevatedButton(
-              onPressed: () async {
-                PermissionStatus status =
-                    await Permission.activityRecognition.request();
-
-                if (status == PermissionStatus.granted) {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const Signup()));
-                }
-
-                if (status == PermissionStatus.denied) {
-                  const SnackBar(
-                    content: Text("This permission is required."),
-                  );
-                }
-                if (status == PermissionStatus.permanentlyDenied) {
-                  openAppSettings();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: orange,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  )),
-              child: Text(
-                "Allow",
-                style: GoogleFonts.nunito(
-                    fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            // const PermissionHandlerScreen()
+            const PermissionHandlerScreen()
           ],
         ),
       ),
@@ -104,111 +72,54 @@ class Permissions extends StatelessWidget {
   }
 }
 
-// class PermissionHandlerScreen extends StatefulWidget {
-//   const PermissionHandlerScreen({super.key});
-//   @override
-//   State<PermissionHandlerScreen> createState() =>
-//       _PermissionHandlerScreenState();
-// }
+class PermissionHandlerScreen extends StatefulWidget {
+  const PermissionHandlerScreen({super.key});
+  @override
+  State<PermissionHandlerScreen> createState() =>
+      _PermissionHandlerScreenState();
+}
 
-// class _PermissionHandlerScreenState extends State<PermissionHandlerScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     permissionServiceCall();
-//   }
+class _PermissionHandlerScreenState extends State<PermissionHandlerScreen> {
+  @override
+  void initState() {
+    super.initState();
+    permissionServiceCall();
+  }
 
-//   permissionServiceCall() async {
-//     await permissionServices().then(
-//       (value) {
-//         if (value[Permission.notification]!.isGranted &&
-//             value[Permission.phone]!.isGranted &&
-//             value[Permission.activityRecognition]!.isGranted) {
-//           Navigator.pushReplacement(
-//             context,
-//             MaterialPageRoute(builder: (context) => const Signup()),
-//           );
-//         }
-//       },
-//     );
-//   }
+  permissionServiceCall() async {
+    PermissionStatus status = await Permission.activityRecognition.request();
 
-//   /*Permission services*/
-//   Future<Map<Permission, PermissionStatus>> permissionServices() async {
-//     // You can request multiple permissions at once.
-//     Map<Permission, PermissionStatus> statuses = await [
-//       Permission.notification,
-//       Permission.phone,
-//       Permission.activityRecognition,
-//       //add more permission to request here.
-//     ].request();
+    if (status == PermissionStatus.granted) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, '/Signup');
+    }
 
-//     if (statuses[Permission.notification]!.isPermanentlyDenied) {
-//       await openAppSettings().then(
-//         (value) async {
-//           if (value) {
-//             if (await Permission.notification.status.isPermanentlyDenied ==
-//                     true &&
-//                 await Permission.notification.status.isGranted == false) {
-//               // openAppSettings();
-//             }
-//           }
-//         },
-//       );
-//     } else if (statuses[Permission.notification]!.isDenied) {
-//       permissionServiceCall();
-//     }
+    if (status == PermissionStatus.denied) {
+      const AlertDialog(
+        title: Text("Alert"),
+        content: Text(
+            "These permission are required to open the application. Please allow it."),
+      );
+    }
+    if (status == PermissionStatus.permanentlyDenied) {
+      openAppSettings();
+    }
+  }
 
-//     if (statuses[Permission.phone]!.isPermanentlyDenied) {
-//       await openAppSettings().then(
-//         (value) async {
-//           if (value) {
-//             if (await Permission.phone.status.isPermanentlyDenied == true &&
-//                 await Permission.phone.status.isGranted == false) {
-//               // openAppSettings();
-//             }
-//           }
-//         },
-//       );
-//     } else if (statuses[Permission.phone]!.isDenied) {
-//       permissionServiceCall();
-//     }
-
-//     if (statuses[Permission.activityRecognition]!.isPermanentlyDenied) {
-//       await openAppSettings().then(
-//         (value) async {
-//           if (value) {
-//             if (await Permission
-//                         .activityRecognition.status.isPermanentlyDenied ==
-//                     true &&
-//                 await Permission.activityRecognition.status.isGranted ==
-//                     false) {
-//               // openAppSettings();
-//             }
-//           }
-//         },
-//       );
-//     } else if (statuses[Permission.activityRecognition]!.isDenied) {
-//       permissionServiceCall();
-//     }
-
-//     return statuses;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: () => permissionServiceCall(),
-//       style: ElevatedButton.styleFrom(
-//           backgroundColor: orange,
-//           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(25),
-//           )),
-//       child: Text(
-//         "Allow",
-//         style: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.bold),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => permissionServiceCall(),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: orange,
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          )),
+      child: Text(
+        "Allow",
+        style: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}

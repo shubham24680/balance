@@ -1,7 +1,5 @@
-import 'package:balance/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'onboarding.dart';
 import 'tool.dart';
 
 class OptionScreen extends StatelessWidget {
@@ -43,9 +41,7 @@ class OptionScreen extends StatelessWidget {
             // Log in Button
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const Login();
-                }));
+                Navigator.pushNamed(context, '/Login');
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: red,
@@ -62,10 +58,7 @@ class OptionScreen extends StatelessWidget {
             // Sign up Button
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const OnboardingScreen()));
+                Navigator.pushNamed(context, '/Onboarding');
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white10,

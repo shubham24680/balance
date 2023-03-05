@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
-import 'package:balance/home.dart';
+// import 'package:balance/home.dart';
 import 'package:balance/tool.dart';
 
 class OTPScreen extends StatefulWidget {
@@ -53,10 +53,10 @@ class _OTPScreenState extends State<OTPScreen> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const Home()),
+                  // );
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: blue,
