@@ -17,6 +17,7 @@ dependencies:
   permission_handler: ^10.2.0
   pinput: ^2.2.31
   smooth_page_indicator: ^1.0.1
+  step_progress_indicator: ^1.0.2
 
 dev_dependencies:
   flutter_test:

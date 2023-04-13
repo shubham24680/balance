@@ -1,88 +1,47 @@
-import 'package:balance/home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'authentication.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'validator.dart';
-import 'tool.dart';
+import 'authentication.dart';
+import '../Home/navigationbar.dart';
+import '../tool.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<Login> createState() => _LoginState();
 }
 
-class _SignupState extends State<Signup> {
+class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
 
-  final _name = FocusNode();
   final _email = FocusNode();
   final _password = FocusNode();
-  final _confirmPassword = FocusNode();
 
   bool _isprocessing = false;
   bool _obscure = true;
 
-  Future register() async {
-    setState(() {
-      _isprocessing = true;
-    });
-
-    if (formKey.currentState!.validate() &&
-        _passwordController.text == _confirmPasswordController.text) {
-      User? user = await Auth.registerUsingEmailPassword(
-        name: _nameController.text,
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      setState(() {
-        _isprocessing = false;
-      });
-
-      if (user != null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Home(user: user)),
-            (route) => false);
-      }
-    }
-
-    setState(() {
-      _isprocessing = false;
-    });
-  }
-
   field(id) {
     Map<int, TextEditingController> control = {
-      1: _nameController,
-      2: _emailController,
-      3: _passwordController,
-      4: _confirmPasswordController,
+      1: _emailController,
+      2: _passwordController,
     };
     Map<int, FocusNode> node = {
-      1: _name,
-      2: _email,
-      3: _confirmPassword,
-      4: _password,
+      1: _email,
+      2: _password,
     };
     Map<int, String> hint = {
-      1: "FULL NAME",
-      2: "EMAIL ADDRESS",
-      3: "PASSWORD",
-      4: "CONFIRM PASSWORD",
+      1: "EMAIL ADDRESS",
+      2: "PASSWORD",
     };
     Map<int, TextInputType> keyboard = {
-      1: TextInputType.name,
-      2: TextInputType.emailAddress,
-      3: TextInputType.visiblePassword,
-      4: TextInputType.visiblePassword,
+      1: TextInputType.emailAddress,
+      2: TextInputType.visiblePassword,
     };
 
     visibility() {
@@ -101,23 +60,15 @@ class _SignupState extends State<Signup> {
         const SizedBox(height: 5),
         TextFormField(
           cursorColor: blue,
-          obscureText: (id == 4)
-              ? _obscure
-              : (id == 3)
-                  ? true
-                  : false,
+          obscureText: (id == 2) ? _obscure : false,
           controller: control[id],
           focusNode: node[id],
           keyboardType: keyboard[id],
           validator: (value) {
             switch (id) {
               case 1:
-                return Validator.validateName(name: value);
-              case 2:
                 return Validator.validateEmail(email: value);
-              case 3:
-                return Validator.validatepassword(password: value);
-              case 4:
+              case 2:
                 return Validator.validatepassword(password: value);
             }
             return null;
@@ -125,7 +76,7 @@ class _SignupState extends State<Signup> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[150],
-            suffixIcon: (id == 4)
+            suffixIcon: (id == 2)
                 ? GestureDetector(
                     onTap: () => visibility(),
                     child: Icon(
@@ -171,10 +122,8 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _name.unfocus();
         _email.unfocus();
         _password.unfocus();
-        _confirmPassword.unfocus();
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -185,7 +134,7 @@ class _SignupState extends State<Signup> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Create Account",
+                  "Login",
                   style: GoogleFonts.anton(color: Colors.black, fontSize: 32),
                 ),
                 const SizedBox(height: 30),
@@ -196,19 +145,41 @@ class _SignupState extends State<Signup> {
                       field(1),
                       const SizedBox(height: 20),
                       field(2),
-                      const SizedBox(height: 20),
-                      field(3),
-                      const SizedBox(height: 20),
-                      field(4),
                     ],
                   ),
                 ),
                 const SizedBox(height: 40),
                 _isprocessing
                     ? const Center(
-                        child: CircularProgressIndicator(color: blue))
+                        child: CircularProgressIndicator(color: blue),
+                      )
                     : ElevatedButton(
-                        onPressed: () => register(),
+                        onPressed: () async {
+                          _email.unfocus();
+                          _password.unfocus();
+
+                          if (formKey.currentState!.validate()) {
+                            setState(() {
+                              _isprocessing = true;
+                            });
+
+                            User? user = await Auth.signInUsingEmailPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
+
+                            setState(() {
+                              _isprocessing = false;
+                            });
+
+                            if (user != null) {
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => const NavBar()));
+                            }
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: blue,
                             minimumSize: const Size.fromHeight(65),
@@ -216,10 +187,23 @@ class _SignupState extends State<Signup> {
                               borderRadius: BorderRadius.circular(20),
                             )),
                         child: Text(
-                          "Sign up",
+                          "Log in",
                           style: GoogleFonts.nunito(fontSize: 24),
                         ),
                       ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                    child: Text(
+                      "Forgot password?",
+                      textAlign: TextAlign.right,
+                      style: GoogleFonts.varelaRound(
+                          color: blue, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 30),
                 Row(
                   children: [
@@ -268,17 +252,17 @@ class _SignupState extends State<Signup> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already a memeber?",
+                      "Not a member?",
                       style:
                           GoogleFonts.varelaRound(fontWeight: FontWeight.bold),
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, '/Login');
+                        Navigator.popAndPushNamed(context, '/Signup');
                       },
                       style: TextButton.styleFrom(foregroundColor: Colors.blue),
                       child: Text(
-                        "Login now",
+                        "Register now",
                         style: GoogleFonts.varelaRound(
                             color: blue, fontWeight: FontWeight.bold),
                       ),

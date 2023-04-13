@@ -2,30 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'signup.dart';
-import 'tool.dart';
+import '../tool.dart';
+
+class Activity {
+  String title;
+  String subtitle;
+  Activity({required this.title, required this.subtitle});
+}
+
+List<Activity> activity = [
+  Activity(
+    title: "Storage",
+    subtitle:
+        "New weekly healthy reminder, Motivational reminder and Personalised program",
+  ),
+  Activity(
+    title: "Telephone",
+    subtitle:
+        "Used to read your phone number so that people who have this number in their contacts can find you in Together",
+  ),
+  Activity(
+    title: "Physical activity",
+    subtitle: "Used to count your steps",
+  ),
+];
 
 class Permissions extends StatelessWidget {
-  Permissions({super.key});
-
-  final title = {
-    1: "Notification",
-    2: "Telephone",
-    3: "Physical activity",
-  };
-  final subTitle = {
-    1: "New weekly healthy reminder, Motivational reminder and Personalised program",
-    2: "Used to read your phone number so that people who have this number in their contacts can find you in Together",
-    3: "Used to count your steps",
-  };
-
+  const Permissions({super.key});
   @override
   Widget build(BuildContext context) {
     pages(id) {
       return Row(
         children: [
           SvgPicture.asset(
-            'Assets/Icons/icon ($id).svg',
+            'Assets/Icons/icon (${id + 1}).svg',
             height: 30,
           ),
           const SizedBox(width: 20),
@@ -33,14 +43,14 @@ class Permissions extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title[id]!,
+                activity[id].title,
                 style: GoogleFonts.varelaRound(
                     fontSize: 16, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width / 1.4,
                 child: Text(
-                  subTitle[id]!,
+                  activity[id].subtitle,
                   style: GoogleFonts.lato(
                       color: black, fontWeight: FontWeight.bold),
                 ),
@@ -63,7 +73,7 @@ class Permissions extends StatelessWidget {
               "Required permissions",
               style: GoogleFonts.anton(color: Colors.black, fontSize: 32),
             ),
-            for (int index = 1; index <= title.length; index++) pages(index),
+            for (int index = 0; index < activity.length; index++) pages(index),
             const PermissionHandlerScreen()
           ],
         ),

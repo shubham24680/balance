@@ -1,64 +1,85 @@
-import 'package:balance/validator.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'authentication.dart';
-import 'home.dart';
-import 'tool.dart';
+import 'validator.dart';
+import '../tool.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Signup extends StatefulWidget {
+  const Signup({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Signup> createState() => _SignupState();
 }
 
-class _LoginState extends State<Login> {
+class _SignupState extends State<Signup> {
   final formKey = GlobalKey<FormState>();
 
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
+  final _name = FocusNode();
   final _email = FocusNode();
   final _password = FocusNode();
+  final _confirmPassword = FocusNode();
 
   bool _isprocessing = false;
   bool _obscure = true;
 
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
+  Future register() async {
+    setState(() {
+      _isprocessing = true;
+    });
 
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Home(user: user)));
+    if (formKey.currentState!.validate() &&
+        _passwordController.text == _confirmPasswordController.text) {
+      User? user = await Auth.registerUsingEmailPassword(
+        name: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      setState(() {
+        _isprocessing = false;
+      });
+
+      if (user != null) {
+        Navigator.pushNamedAndRemoveUntil(context, '/NavBar', (route) => false);
+      }
     }
-    return firebaseApp;
+
+    setState(() {
+      _isprocessing = false;
+    });
   }
-
-  // Future login() async {
-
-  // }
 
   field(id) {
     Map<int, TextEditingController> control = {
-      1: _emailController,
-      2: _passwordController,
+      1: _nameController,
+      2: _emailController,
+      3: _passwordController,
+      4: _confirmPasswordController,
     };
     Map<int, FocusNode> node = {
-      1: _email,
-      2: _password,
+      1: _name,
+      2: _email,
+      3: _confirmPassword,
+      4: _password,
     };
     Map<int, String> hint = {
-      1: "EMAIL ADDRESS",
-      2: "PASSWORD",
+      1: "FULL NAME",
+      2: "EMAIL ADDRESS",
+      3: "PASSWORD",
+      4: "CONFIRM PASSWORD",
     };
     Map<int, TextInputType> keyboard = {
-      1: TextInputType.emailAddress,
-      2: TextInputType.visiblePassword,
+      1: TextInputType.name,
+      2: TextInputType.emailAddress,
+      3: TextInputType.visiblePassword,
+      4: TextInputType.visiblePassword,
     };
 
     visibility() {
@@ -77,15 +98,23 @@ class _LoginState extends State<Login> {
         const SizedBox(height: 5),
         TextFormField(
           cursorColor: blue,
-          obscureText: (id == 2) ? _obscure : false,
+          obscureText: (id == 4)
+              ? _obscure
+              : (id == 3)
+                  ? true
+                  : false,
           controller: control[id],
           focusNode: node[id],
           keyboardType: keyboard[id],
           validator: (value) {
             switch (id) {
               case 1:
-                return Validator.validateEmail(email: value);
+                return Validator.validateName(name: value);
               case 2:
+                return Validator.validateEmail(email: value);
+              case 3:
+                return Validator.validatepassword(password: value);
+              case 4:
                 return Validator.validatepassword(password: value);
             }
             return null;
@@ -93,7 +122,7 @@ class _LoginState extends State<Login> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[150],
-            suffixIcon: (id == 2)
+            suffixIcon: (id == 4)
                 ? GestureDetector(
                     onTap: () => visibility(),
                     child: Icon(
@@ -139,8 +168,10 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        _name.unfocus();
         _email.unfocus();
         _password.unfocus();
+        _confirmPassword.unfocus();
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -151,7 +182,7 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Login",
+                  "Create Account",
                   style: GoogleFonts.anton(color: Colors.black, fontSize: 32),
                 ),
                 const SizedBox(height: 30),
@@ -162,75 +193,30 @@ class _LoginState extends State<Login> {
                       field(1),
                       const SizedBox(height: 20),
                       field(2),
+                      const SizedBox(height: 20),
+                      field(3),
+                      const SizedBox(height: 20),
+                      field(4),
                     ],
                   ),
                 ),
                 const SizedBox(height: 40),
-                FutureBuilder(
-                  future: _initializeFirebase(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return _isprocessing
-                          ? const Center(
-                              child: CircularProgressIndicator(color: blue),
-                            )
-                          : ElevatedButton(
-                              onPressed: () async {
-                                _email.unfocus();
-                                _password.unfocus();
-
-                                if (formKey.currentState!.validate()) {
-                                  print("success");
-                                  setState(() {
-                                    _isprocessing = true;
-                                  });
-
-                                  User? user =
-                                      await Auth.signInUsingEmailPassword(
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
-                                  );
-
-                                  setState(() {
-                                    _isprocessing = false;
-                                  });
-
-                                  if (user != null) {
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                Home(user: user)));
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: blue,
-                                  minimumSize: const Size.fromHeight(65),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  )),
-                              child: Text(
-                                "Log in",
-                                style: GoogleFonts.nunito(fontSize: 24),
-                              ),
-                            );
-                    }
-                    return const CircularProgressIndicator(color: blue);
-                  },
-                ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(foregroundColor: Colors.blue),
-                    child: Text(
-                      "Forgot password?",
-                      textAlign: TextAlign.right,
-                      style: GoogleFonts.varelaRound(
-                          color: blue, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+                _isprocessing
+                    ? const Center(
+                        child: CircularProgressIndicator(color: blue))
+                    : ElevatedButton(
+                        onPressed: () => register(),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: blue,
+                            minimumSize: const Size.fromHeight(65),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            )),
+                        child: Text(
+                          "Sign up",
+                          style: GoogleFonts.nunito(fontSize: 24),
+                        ),
+                      ),
                 const SizedBox(height: 30),
                 Row(
                   children: [
@@ -279,17 +265,17 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Not a member?",
+                      "Already a memeber?",
                       style:
                           GoogleFonts.varelaRound(fontWeight: FontWeight.bold),
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, '/Signup');
+                        Navigator.popAndPushNamed(context, '/Login');
                       },
                       style: TextButton.styleFrom(foregroundColor: Colors.blue),
                       child: Text(
-                        "Register now",
+                        "Login now",
                         style: GoogleFonts.varelaRound(
                             color: blue, fontWeight: FontWeight.bold),
                       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'tool.dart';
+import '../tool.dart';
 
 class OptionScreen extends StatelessWidget {
   const OptionScreen({super.key});

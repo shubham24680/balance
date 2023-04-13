@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'tool.dart';
+import '../tool.dart';
 
 class Gender extends StatefulWidget {
   const Gender({super.key});

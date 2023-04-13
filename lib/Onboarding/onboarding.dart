@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'tool.dart';
+import '../tool.dart';
+
+class Activity {
+  String title;
+  String subtitle;
+  Activity({required this.title, required this.subtitle});
+}
+
+List<Activity> activity = [
+  Activity(
+    title: "FUN EXERCISE",
+    subtitle:
+        "You cannot always control what goes on the outside. But you always control what goes on the inside, Being your journey to a better life with peace and discover your soul.",
+  ),
+  Activity(
+    title: "OWN YOUR HEALTH",
+    subtitle:
+        "Your Diet Is A Bank Account. Good Food Choices Are Good Investments.",
+  ),
+];
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -13,26 +32,18 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _controller = PageController(initialPage: 0);
   int _activePage = 0;
-  final title = {
-    1: "FUN EXERCISE",
-    2: "OWN YOUR HEALTH",
-  };
-  final subTitle = {
-    1: "You cannot always control what goes on the outside. But you always control what goes on the inside, Being your journey to a better life with peace and discover your soul.",
-    2: "Your Diet Is A Bank Account. Good Food Choices Are Good Investments.",
-  };
 
   pages(id) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const SizedBox(height: 100),
-        Image.asset('Assets/Images/one ($id).png'),
+        Image.asset('Assets/Images/one (${id + 1}).png'),
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Text(
-            title[id]!,
+            activity[id].title,
             style: GoogleFonts.anton(color: purple, fontSize: 48),
           ),
         ),
@@ -40,7 +51,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Text(
-            subTitle[id]!,
+            activity[id].subtitle,
             textAlign: TextAlign.center,
             style: GoogleFonts.lato(color: black, fontSize: 16),
           ),
@@ -60,9 +71,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             _activePage = value;
           });
         },
-        itemCount: title.length,
+        itemCount: activity.length,
         itemBuilder: (context, index) {
-          return pages((index % title.length) + 1);
+          return pages(index % activity.length);
         },
       ),
       bottomSheet: Container(
@@ -74,7 +85,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           children: [
             SmoothPageIndicator(
               controller: _controller,
-              count: title.length,
+              count: activity.length,
               effect: const ExpandingDotsEffect(
                 activeDotColor: purple,
                 dotColor: purple,
@@ -87,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_activePage + 1 != title.length) {
+                if (_activePage + 1 != activity.length) {
                   _controller.animateToPage(_activePage + 1,
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeIn);
@@ -103,7 +114,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     borderRadius: BorderRadius.circular(25),
                   )),
               child: Text(
-                (_activePage + 1 != title.length ? "NEXT" : "SIGN UP"),
+                (_activePage + 1 != activity.length ? "NEXT" : "SIGN UP"),
                 style: GoogleFonts.nunito(
                     fontSize: 20, fontWeight: FontWeight.bold),
               ),
